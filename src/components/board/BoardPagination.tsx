@@ -12,17 +12,15 @@ const BoardPagination: React.FC<BoardPaginationProps> = ({
   totalPages,
   onPageChange,
 }) => {
-  // 현재 페이지가 속한 페이지 그룹의 시작과 끝 계산
   const pageGroupSize = 10;
   const currentGroup = Math.floor((currentPage - 1) / pageGroupSize);
   const startPage = currentGroup * pageGroupSize + 1;
   const endPage = Math.min(startPage + pageGroupSize - 1, totalPages);
 
-  // 페이지 번호 배열 생성
   const pageNumbers = Array.from(
     { length: endPage - startPage + 1 },
     (_, i) => startPage + i
-  );
+  ).filter(pageNum => pageNum <= totalPages);
 
   return (
     <Stack direction="horizontal" className="justify-content-center mt-5">
@@ -39,7 +37,6 @@ const BoardPagination: React.FC<BoardPaginationProps> = ({
           disabled={startPage === 1}
         />
 
-        {/* 페이지 번호들 */}
         {pageNumbers.map(pageNum => (
           <Pagination.Item
             key={pageNum}

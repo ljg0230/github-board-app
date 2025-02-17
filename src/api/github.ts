@@ -141,4 +141,26 @@ export const createIssue = async (
     console.error('Error creating issue:', error);
     throw error;
   }
+};
+
+export const getTotalIssueCount = async (boardType: BoardType) => {
+  const [owner, repo] = REPOS[boardType].split('/');
+  const countResponse = await octokit.rest.issues.listForRepo({
+    owner,
+    repo,
+    state: 'all',
+    per_page: 1
+  });
+  
+  const linkHeader = countResponse.headers.link;
+  if (!linkHeader) return 1;
+
+  const links = linkHeader.split(', ');
+  const lastLink = links.find(link => link.endsWith('rel="last"'));
+  console.log('lastLink:', lastLink);
+  if (!lastLink) return 1;
+
+  const pageMatch = lastLink.match(/&page=(\d+)/);
+  console.log('pageMatch:', pageMatch);
+  return pageMatch ? parseInt(pageMatch[1]) : 1;
 }; 

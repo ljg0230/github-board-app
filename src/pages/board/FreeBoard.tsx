@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import BoardSearchForm from '@/components/board/BoardSearchForm';
 import BoardTable from '@/components/board/BoardTable';
 import BoardTableSkeleton from '@/components/board/skeleton/BoardTableSkeleton';
@@ -14,7 +14,7 @@ const FreeBoard: React.FC = () => {
     keyword: string;
   } | null>(null);
   
-  const { data, isLoading } = useIssueList('FREE', page, searchParams || undefined);
+  const { data, isLoading, isFetching } = useIssueList('FREE', page, searchParams);
   const navigate = useNavigate();
   
   const handleSearch = (searchType: string, keyword: string) => {
@@ -43,15 +43,19 @@ const FreeBoard: React.FC = () => {
 
       <BoardSearchForm onSearch={handleSearch} onWrite={handleWrite} />
 
-      {isLoading ? (
+      {isLoading || isFetching ? (
         <BoardTableSkeleton />
       ) : (
-        <BoardTable posts={data?.issues || []} onPostClick={handlePostClick} />
+        <>
+          <BoardTable 
+            posts={data?.issues || []} 
+            onPostClick={handlePostClick} 
+          />
+        </>
       )}
-
       <BoardPagination
-        currentPage={data?.pagination.currentPage || 1}
-        totalPages={Math.ceil((data?.total_count || 0) / 10)}
+        currentPage={page}
+        totalPages={data?.totalPages || 1}
         onPageChange={setPage}
       />
     </div>
