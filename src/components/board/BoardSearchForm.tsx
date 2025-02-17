@@ -1,3 +1,4 @@
+import { useModal } from '@/contexts/ModalContext';
 import React, { useState } from 'react';
 import { Form, Button, Stack } from 'react-bootstrap';
 
@@ -11,12 +12,15 @@ interface BoardSearchFormProps {
 const BoardSearchForm: React.FC<BoardSearchFormProps> = ({ onSearch, onWrite, onCancelSearch, isLoading }) => {
   const [searchType, setSearchType] = useState('제목');
   const [keyword, setKeyword] = useState('');
+  const { alert } = useModal();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (keyword.trim()) {
-      onSearch(searchType, keyword);
+    if (!keyword.trim()) {
+      alert('검색어를 입력하세요');
+      return;
     }
+    onSearch(searchType, keyword);
   };
 
   return (
