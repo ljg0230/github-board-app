@@ -19,7 +19,7 @@ export const getIssueList = async (
   try {
     const [owner, repo] = REPOS[boardType].split('/');
     
-    // 검색어가 있는 경우 GitHub 검색 API 사용
+    // 검색어가 있는 경우
     if (searchParams?.keyword) {
       const searchQuery = `repo:${owner}/${repo} ${
         searchParams.searchType === '제목' ? 'in:title' : 

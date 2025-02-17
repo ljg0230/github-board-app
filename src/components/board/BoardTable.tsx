@@ -51,7 +51,7 @@ const BoardTable: React.FC<BoardTableProps> = ({ posts, onPostClick }) => {
         ) : (
           <tr>
             <td colSpan={4} className="text-center py-4">
-              등록된 게시글이 없습니다
+              등록된 게시글이 없습니다.
             </td>
           </tr>
         )}

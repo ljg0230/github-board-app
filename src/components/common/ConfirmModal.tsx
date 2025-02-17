@@ -24,7 +24,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
       <p className="mb-4 text-center" style={{ minHeight: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center', whiteSpace: 'pre-line' }}>
         {message}
       </p>
-      <Stack direction="horizontal" gap={3} className="justify-content-center">
+      <Stack direction="horizontal" gap={5} className="justify-content-center">
         <Button 
           variant="secondary" 
           onClick={onClose}

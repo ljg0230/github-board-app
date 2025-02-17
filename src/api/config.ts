@@ -4,9 +4,8 @@ import { Octokit } from 'octokit';
 export const octokit = new Octokit({
   auth: import.meta.env.VITE_GITHUB_TOKEN,
   baseUrl: 'https://api.github.com',
-  headers: {
-    'X-GitHub-Api-Version': '2022-11-28'
-  }
+  // headers: {
+  // }
 });
 
 // 게시판별 저장소 설정
