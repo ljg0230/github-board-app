@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import BoardDetail from '@/components/board/BoardDetail';
-import BoardDetailSkeleton from '@/components/board/BoardDetailSkeleton';
+import BoardDetailSkeleton from '@/components/board/skeleton/BoardDetailSkeleton';
 import { useModal } from '@/contexts/ModalContext';
 import { useIssue } from '@/hooks/useGitHubIssues';
 
