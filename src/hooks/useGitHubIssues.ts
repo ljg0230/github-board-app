@@ -21,30 +21,18 @@ export const useIssueList = (
   page: number = 1,
   searchParams?: SearchParams | null
 ) => {
-  const queryClient = useQueryClient();
-
-  const { data: totalItems } = useQuery({
-    queryKey: [TOTAL_COUNT_KEY, boardType],
-    queryFn: () => getTotalIssueCount(boardType),
-    staleTime: 0,
-    gcTime: 0,
-    refetchOnMount: true,
-    refetchOnWindowFocus: true
-  });
-
   return useQuery<IssueListResponse, Error>({
     queryKey: ['issues', boardType, page, searchParams],
     queryFn: async () => {
       const response = await getIssueList(boardType, page, searchParams || undefined);
       return {
         issues: response.issues,
-        totalPages: Math.ceil((totalItems || 0) / ITEMS_PER_PAGE)
+        totalPages: Math.ceil(response.total_count / ITEMS_PER_PAGE)
       };
     },
     retry: false,
     refetchOnWindowFocus: true,
     refetchOnMount: true,
-    enabled: totalItems !== undefined,
     staleTime: 0,
     gcTime: 0,
     networkMode: 'always'

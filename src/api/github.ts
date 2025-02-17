@@ -18,6 +18,7 @@ export const getIssueList = async (
 ): Promise<IssueListResponse> => {
   try {
     const [owner, repo] = REPOS[boardType].split('/');
+    const perPage = 10;
     
     // 검색어가 있는 경우
     if (searchParams?.keyword) {
@@ -29,7 +30,7 @@ export const getIssueList = async (
 
       const searchResponse = await octokit.rest.search.issuesAndPullRequests({
         q: searchQuery,
-        per_page: 10,
+        per_page: perPage,
         page,
       });
 
@@ -45,34 +46,36 @@ export const getIssueList = async (
           avatar_url: item.user?.avatar_url || ''
         },
         labels: item.labels.map(label => ({
-          name: (typeof label === 'string' ? label : label.name) || '',
+          name: typeof label === 'string' ? label : (label.name || ''),
           color: typeof label === 'string' ? '' : (label.color || '')
         })),
         state: item.state as 'open' | 'closed'
       }));
 
+      const totalCount = searchResponse.data.total_count;
+      const totalPages = Math.ceil(totalCount / perPage);
+
       return {
         issues,
-        total_count: searchResponse.data.total_count,
+        total_count: totalCount,
         pagination: {
           currentPage: page,
-          perPage: 10,
-          hasNextPage: issues.length === 10,
+          perPage,
+          hasNextPage: page < totalPages,
           hasPrevPage: page > 1
         }
       };
     }
 
     // 검색어가 없는 경우
-    const response = await octokit.rest.issues.listForRepo({
-      owner,
-      repo,
-      state: 'open',
-      per_page: 10,
-      page
+    const searchQuery = `repo:${owner}/${repo} state:open`;
+    const searchResponse = await octokit.rest.search.issuesAndPullRequests({
+      q: searchQuery,
+      per_page: perPage,
+      page,
     });
 
-    const issues: Issue[] = response.data.map(item => ({
+    const issues: Issue[] = searchResponse.data.items.map(item => ({
       number: item.number,
       title: item.title,
       body: item.body || '',
@@ -84,7 +87,7 @@ export const getIssueList = async (
         avatar_url: item.user?.avatar_url || ''
       },
       labels: item.labels.map(label => ({
-        name: (typeof label === 'string' ? label : label.name) || '',
+        name: typeof label === 'string' ? label : (label.name || ''),
         color: typeof label === 'string' ? '' : (label.color || '')
       })),
       state: item.state as 'open' | 'closed'
@@ -92,11 +95,11 @@ export const getIssueList = async (
 
     return {
       issues,
-      total_count: response.data.length,
+      total_count: searchResponse.data.total_count,
       pagination: {
         currentPage: page,
-        perPage: 10,
-        hasNextPage: response.data.length === 10,
+        perPage,
+        hasNextPage: page * perPage < searchResponse.data.total_count,
         hasPrevPage: page > 1
       }
     };
