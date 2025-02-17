@@ -3,9 +3,11 @@ import { Octokit } from 'octokit';
 // GitHub API 인스턴스 생성
 export const octokit = new Octokit({
   auth: import.meta.env.VITE_GITHUB_TOKEN,
-  baseUrl: 'https://api.github.com',
-  // headers: {
-  // }
+  request: {
+    headers: {
+      'If-None-Match': ''
+    }
+  }
 });
 
 // 게시판별 저장소 설정

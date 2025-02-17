@@ -2,6 +2,11 @@
 
 이 프로젝트는 React, TypeScript, Vite로 구축된 GitHub 게시판 애플리케이션입니다.
 
+현재 github api 의 응답 헤더를 확인해보면 
+cache-control: private, max-age=60, s-maxage=60
+서버 측에서 60 초 동안의 캐시를 강제하고 있는 것으로 보입니다.
+해당 이유로 현재 데이터 패칭 시 캐싱 관련 즉시 업데이트 처리가 불가능한 이슈가 있습니다.
+
 ## 기술 스택
 
 - **React**

@@ -1,7 +1,6 @@
 export const formatDateTime = (dateString: string): string => {
   const date = new Date(dateString);
   
-  // UTC 시간을 한국 시간으로 변환
   const koreanDate = new Date(date.getTime() + 9 * 60 * 60 * 1000);
   
   const year = koreanDate.getUTCFullYear();
@@ -17,7 +16,6 @@ export const formatDateTime = (dateString: string): string => {
 // 오늘 날짜일 경우 시간만 노출
 export const formatDateOrTimeIfToday = (dateString: string): string => {
   const date = new Date(dateString);
-  
   const koreanDate = new Date(date.getTime() + 9 * 60 * 60 * 1000);
   
   const year = koreanDate.getUTCFullYear();
@@ -26,11 +24,14 @@ export const formatDateOrTimeIfToday = (dateString: string): string => {
   const hours = String(koreanDate.getUTCHours()).padStart(2, '0');
   const minutes = String(koreanDate.getUTCMinutes()).padStart(2, '0');
 
-  const today = new Date();
+  // 현재 한국 시간 구하기
+  const now = new Date();
+  const koreanNow = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+
   const isToday = 
-    koreanDate.getUTCFullYear() === today.getUTCFullYear() &&
-    koreanDate.getUTCMonth() === today.getUTCMonth() &&
-    koreanDate.getUTCDate() === today.getUTCDate();
+    koreanDate.getUTCFullYear() === koreanNow.getUTCFullYear() &&
+    koreanDate.getUTCMonth() === koreanNow.getUTCMonth() &&
+    koreanDate.getUTCDate() === koreanNow.getUTCDate();
 
   return isToday ? `${hours}:${minutes}` : `${year}-${month}-${day} ${hours}:${minutes}`;
 };
