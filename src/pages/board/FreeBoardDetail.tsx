@@ -1,6 +1,7 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import BoardDetail from '@/components/board/BoardDetail';
+import BoardDetailSkeleton from '@/components/board/BoardDetailSkeleton';
 import { useModal } from '@/contexts/ModalContext';
 import { useIssue } from '@/hooks/useGitHubIssues';
 
@@ -31,7 +32,7 @@ const FreeBoardDetail: React.FC = () => {
   };
 
   if (isLoading) {
-    return <>로딩중</>;
+    return <BoardDetailSkeleton />;
   }
 
   if (isError || !issue) {
@@ -52,4 +53,4 @@ const FreeBoardDetail: React.FC = () => {
   );
 };
 
-export default FreeBoardDetail; 
+export default FreeBoardDetail;

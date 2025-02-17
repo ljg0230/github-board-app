@@ -14,9 +14,9 @@ const BoardTable: React.FC<BoardTableProps> = ({ posts, onPostClick }) => {
       <thead>
         <tr className="text-center">
           <th style={{ width: '8%' }}>번호</th>
-          <th style={{ width: '62%' }}>제목</th>
-          <th style={{ width: '15%' }}>작성자</th>
-          <th style={{ width: '15%' }}>작성일</th>
+          <th style={{ width: '60%' }}>제목</th>
+          <th style={{ width: '13%' }}>작성자</th>
+          <th style={{ width: '19%' }}>작성일</th>
         </tr>
       </thead>
       <tbody>
