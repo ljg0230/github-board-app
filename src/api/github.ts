@@ -14,65 +14,28 @@ interface IssueListResponse {
 export const getIssueList = async (
   boardType: BoardType,
   page: number = 1,
-  searchParams?: { searchType: string; keyword: string }
+  searchParams?: { searchType: string; keyword: string },
+  signal?: AbortSignal
 ): Promise<IssueListResponse> => {
   try {
     const [owner, repo] = REPOS[boardType].split('/');
     const perPage = 10;
     
-    // 검색어가 있는 경우
-    if (searchParams?.keyword) {
-      const searchQuery = `repo:${owner}/${repo} state:open ${
-        searchParams.searchType === '제목' ? 'in:title' : 
-        searchParams.searchType === '내용' ? 'in:body' : 
-        'in:title,body'
-      } ${searchParams.keyword}`;
+    const searchQuery = searchParams?.keyword 
+      ? `repo:${owner}/${repo} state:open ${
+          searchParams.searchType === '제목' ? 'in:title' : 
+          searchParams.searchType === '내용' ? 'in:body' : 
+          'in:title,body'
+        } ${searchParams.keyword}`
+      : `repo:${owner}/${repo} state:open`;
 
-      const searchResponse = await octokit.rest.search.issuesAndPullRequests({
-        q: searchQuery,
-        per_page: perPage,
-        page,
-      });
-
-      const issues: Issue[] = searchResponse.data.items.map(item => ({
-        number: item.number,
-        title: item.title,
-        body: item.body || '',
-        created_at: item.created_at,
-        updated_at: item.updated_at,
-        comments: item.comments,
-        user: {
-          login: item.user?.login || '',
-          avatar_url: item.user?.avatar_url || ''
-        },
-        labels: item.labels.map(label => ({
-          name: typeof label === 'string' ? label : (label.name || ''),
-          color: typeof label === 'string' ? '' : (label.color || '')
-        })),
-        state: item.state as 'open' | 'closed'
-      }));
-
-      const totalCount = searchResponse.data.total_count;
-      const totalPages = Math.ceil(totalCount / perPage);
-
-      return {
-        issues,
-        total_count: totalCount,
-        pagination: {
-          currentPage: page,
-          perPage,
-          hasNextPage: page < totalPages,
-          hasPrevPage: page > 1
-        }
-      };
-    }
-
-    // 검색어가 없는 경우
-    const searchQuery = `repo:${owner}/${repo} state:open`;
-    const searchResponse = await octokit.rest.search.issuesAndPullRequests({
+    const searchResponse = await octokit.request('GET /search/issues', {
       q: searchQuery,
       per_page: perPage,
       page,
+      request: {
+        signal
+      }
     });
 
     const issues: Issue[] = searchResponse.data.items.map(item => ({
@@ -93,17 +56,23 @@ export const getIssueList = async (
       state: item.state as 'open' | 'closed'
     }));
 
+    const totalCount = searchResponse.data.total_count;
+    const totalPages = Math.ceil(totalCount / perPage);
+
     return {
       issues,
-      total_count: searchResponse.data.total_count,
+      total_count: totalCount,
       pagination: {
         currentPage: page,
         perPage,
-        hasNextPage: page * perPage < searchResponse.data.total_count,
+        hasNextPage: page < totalPages,
         hasPrevPage: page > 1
       }
     };
   } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw new Error('Search aborted');
+    }
     console.error('Error fetching issues:', error);
     throw error;
   }

@@ -4,15 +4,19 @@ import { Form, Button, Stack } from 'react-bootstrap';
 interface BoardSearchFormProps {
   onSearch: (searchType: string, keyword: string) => void;
   onWrite: () => void;
+  onCancelSearch?: () => void;
+  isLoading: boolean;
 }
 
-const BoardSearchForm: React.FC<BoardSearchFormProps> = ({ onSearch, onWrite }) => {
+const BoardSearchForm: React.FC<BoardSearchFormProps> = ({ onSearch, onWrite, onCancelSearch, isLoading }) => {
   const [searchType, setSearchType] = useState('제목');
   const [keyword, setKeyword] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSearch(searchType, keyword);
+    if (keyword.trim()) {
+      onSearch(searchType, keyword);
+    }
   };
 
   return (
@@ -36,6 +40,14 @@ const BoardSearchForm: React.FC<BoardSearchFormProps> = ({ onSearch, onWrite }) 
         />
 
         <Button type="submit" variant="secondary">검색</Button>
+        {isLoading && (
+          <Button 
+            variant="outline-secondary" 
+            onClick={onCancelSearch}
+          >
+            검색 취소
+          </Button>
+        )}
         <Button variant="primary" onClick={onWrite} className="ms-auto">글쓰기</Button>
       </Stack>
     </Form>

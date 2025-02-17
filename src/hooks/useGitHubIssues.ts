@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getIssueList, getIssue, getTotalIssueCount, createIssue, deleteIssue } from '@/api/github';
 import { BoardType, Issue } from '@/api/config';
+import { useNavigate } from 'react-router-dom';
 
 interface SearchParams {
   searchType: string;
@@ -21,7 +22,9 @@ export const useIssueList = (
   page: number = 1,
   searchParams?: SearchParams | null
 ) => {
-  return useQuery<IssueListResponse, Error>({
+  const queryClient = useQueryClient();
+  
+  const { data, isLoading, isFetching } = useQuery({
     queryKey: ['issues', boardType, page, searchParams],
     queryFn: async () => {
       const response = await getIssueList(boardType, page, searchParams || undefined);
@@ -29,14 +32,14 @@ export const useIssueList = (
         issues: response.issues,
         totalPages: Math.ceil(response.total_count / ITEMS_PER_PAGE)
       };
-    },
-    retry: false,
-    refetchOnWindowFocus: true,
-    refetchOnMount: true,
-    staleTime: 0,
-    gcTime: 0,
-    networkMode: 'always'
+    }
   });
+
+  const cancelSearch = () => {
+    queryClient.cancelQueries({ queryKey: ['issues', boardType, page, searchParams] });
+  };
+
+  return { data, isLoading, isFetching, cancelSearch };
 };
 
 // 이슈 상세 조회 hook
@@ -114,6 +117,7 @@ export const useCreateIssue = () => {
 
 export const useDeleteIssue = () => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   return useMutation({
     mutationFn: ({ boardType, issueNumber }: {
@@ -121,22 +125,27 @@ export const useDeleteIssue = () => {
       issueNumber: number;
     }) => deleteIssue(boardType, issueNumber),
 
-    onSuccess: async (_, { boardType }) => {
-      queryClient.removeQueries({
-        queryKey: ['issues', boardType]
-      });
-      queryClient.removeQueries({
-        queryKey: [TOTAL_COUNT_KEY, boardType]
-      });
+    onSuccess: async (_, { boardType, issueNumber }) => {
+      // 현재 캐시된 데이터에서 삭제된 이슈 제거
+      queryClient.setQueryData<IssueListResponse>(
+        ['issues', boardType, 1],
+        (oldData) => {
+          if (!oldData) return oldData;
+          return {
+            ...oldData,
+            issues: oldData.issues.filter(issue => issue.number !== issueNumber),
+            totalPages: Math.ceil((oldData.issues.length - 1) / ITEMS_PER_PAGE)
+          };
+        }
+      );
 
-      queryClient.prefetchQuery({
-        queryKey: ['issues', boardType, 1],
-        queryFn: () => getIssueList(boardType, 1)
-      }),
-      queryClient.prefetchQuery({
-        queryKey: [TOTAL_COUNT_KEY, boardType],
-        queryFn: () => getTotalIssueCount(boardType)
-      })
+      // 전체 개수 감소
+      queryClient.setQueryData<number>(
+        [TOTAL_COUNT_KEY, boardType],
+        (oldCount = 0) => Math.max(0, oldCount - 1)
+      );
+
+      navigate(`/board/${boardType.toLowerCase()}`);
     }
   });
 }; 

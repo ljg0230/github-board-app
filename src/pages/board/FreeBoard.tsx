@@ -1,22 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import BoardSearchForm from '@/components/board/BoardSearchForm';
 import BoardTable from '@/components/board/BoardTable';
 import BoardTableSkeleton from '@/components/board/skeleton/BoardTableSkeleton';
 import BoardPagination from '@/components/board/BoardPagination';
 import { useIssueList } from '@/hooks/useGitHubIssues';
-import { useNavigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
 
 const FreeBoard: React.FC = () => {
+  const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [searchParams, setSearchParams] = useState<{
     searchType: string;
     keyword: string;
   } | null>(null);
-  
-  const { data, isLoading, isFetching } = useIssueList('FREE', page, searchParams);
-  const navigate = useNavigate();
-  
+
+  const { data, isLoading, isFetching, cancelSearch } = useIssueList('FREE', page, searchParams);
+
   const handleSearch = (searchType: string, keyword: string) => {
     if (keyword.trim()) {
       setSearchParams({ searchType, keyword });
@@ -30,10 +30,6 @@ const FreeBoard: React.FC = () => {
     navigate('write');
   };
 
-  const handlePostClick = (postId: number) => {
-    navigate(`${postId}`);
-  };
-
   return (
     <div>
       <Helmet>
@@ -41,17 +37,20 @@ const FreeBoard: React.FC = () => {
       </Helmet>
       <h2 className="mb-4">자유게시판</h2>
 
-      <BoardSearchForm onSearch={handleSearch} onWrite={handleWrite} />
+      <BoardSearchForm 
+        onSearch={handleSearch} 
+        onWrite={handleWrite}
+        onCancelSearch={cancelSearch}
+        isLoading={isLoading}
+      />
 
       {isLoading || isFetching ? (
         <BoardTableSkeleton />
       ) : (
-        <>
-          <BoardTable 
-            posts={data?.issues || []} 
-            onPostClick={handlePostClick} 
-          />
-        </>
+        <BoardTable
+          posts={data?.issues || []}
+          onPostClick={(issueNumber) => navigate(`${issueNumber}`)}
+        />
       )}
       <BoardPagination
         currentPage={page}
