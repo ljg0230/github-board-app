@@ -1,50 +1,67 @@
-# React + TypeScript + Vite
+# GitHub 게시판 앱
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+이 프로젝트는 React, TypeScript, Vite로 구축된 GitHub 게시판 애플리케이션입니다.
 
-Currently, two official plugins are available:
+## 기술 스택
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **React**
+- **TypeScript**
+- **React Router**
+- **React Query**
+- **ESLint**
+- **Prettier**
+- **React Bootstrap**
+- **Vite**
 
-## Expanding the ESLint configuration
+## 시작하기
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### 사전 요구 사항
 
-- Configure the top-level `parserOptions` property like this:
+- Node.js (권장 버전: 20 이상)
+- npm
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### 애플리케이션 실행
+
+1. 개발 서버 시작:
+    ```sh
+    npm run dev
+    ```
+
+
+## 프로젝트 구조
+
 ```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+github-board-app/
+├── public/                     
+│   └── index.html              # HTML 템플릿
+├── src/                        
+│   ├── assets/                 # 이미지 등 정적 자산
+│   ├── components/             # 공통 컴포넌트
+│   │   ├── board/              # 게시판 관련 컴포넌트
+│   │   │   ├── BoardDetail.tsx
+│   │   │   ├── BoardDetailSkeleton.tsx
+│   │   │   ├── BoardTableSkeleton.tsx
+│   │   │   └── ...
+│   │   └── ...
+│   ├── contexts/               # React Context Provider
+│   │   ├── ModalContext.tsx
+│   │   └── ...
+│   ├── hooks/                  # 공통 커스텀 훅
+│   │   ├── useGitHubIssues.ts
+│   │   └── ...
+│   ├── pages/                  # 페이지 컴포넌트
+│   │   ├── board/              # 페이지 구조 정의
+│   │   │   ├── FreeBoardDetail.tsx
+│   │   │   └── ...
+│   │   └── ...
+│   ├── utils/                  # 유틸리티 함수
+│   │   ├── dateFormat.ts
+│   │   └── ...
+│   ├── App.tsx                 # 메인 앱 컴포넌트
+│   ├── main.tsx                # 진입점
+│   └── ...
+├── .nvmrc                      # Node 버전 구성
+├── package.json                # 프로젝트 메타데이터 및 의존성
+├── tsconfig.json               # TypeScript 구성
+└── vite.config.ts              # Vite 구성
 ```
