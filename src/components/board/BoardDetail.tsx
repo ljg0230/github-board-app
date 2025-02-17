@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Stack } from 'react-bootstrap';
+import { Button, Stack, Row, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { formatDateTime } from '@/utils/dateFormat';
@@ -28,9 +28,9 @@ const BoardDetail: React.FC<BoardDetailProps> = ({
   const navigate = useNavigate();
 
   return (
-    <div>
+    <div className="boad-detail-container">
       <h2 className="mb-4">{boardName}</h2>
-      <div className="border-bottom pb-3 mb-3">
+      <div className="boad-detail-head border-bottom pb-3 mb-3">
         <h3 className="mb-3">{title}</h3>
         <div className="text-muted d-flex align-items-center">
           <img 
@@ -47,26 +47,32 @@ const BoardDetail: React.FC<BoardDetailProps> = ({
           <span>{formatDateTime(createdAt)}</span>
         </div>
       </div>
-      <div className="mb-4" style={{ minHeight: '200px' }}>
+      <div className="boad-detail-contents mb-4 border-bottom" style={{ minHeight: '300px' }}>
         <ReactMarkdown>{content}</ReactMarkdown>
       </div>
-      <Stack direction="horizontal" gap={2} className="justify-content-end">
-        {onEdit && (
-          <Button variant="secondary" onClick={onEdit}>
-            수정
+      <Row className="justify-content-between boad-detail-bottom">
+        <Col>
+          <Stack direction="horizontal" gap={2}>
+            {onEdit && (
+              <Button variant="secondary" onClick={onEdit}>
+                수정
+              </Button>
+            )}
+            {onDelete && (
+              <Button variant="secondary" onClick={onDelete}>
+                삭제
+              </Button>
+            )}
+          </Stack>
+        </Col>
+        <Col className="text-end">
+          <Button variant="primary" onClick={() => navigate(-1)}>
+            목록
           </Button>
-        )}
-        {onDelete && (
-          <Button variant="secondary" onClick={onDelete}>
-            삭제
-          </Button>
-        )}
-        <Button variant="primary" onClick={() => navigate(-1)}>
-          목록
-        </Button>
-      </Stack>
+        </Col>
+      </Row>
     </div>
   );
 };
 
-export default BoardDetail; 
+export default BoardDetail;

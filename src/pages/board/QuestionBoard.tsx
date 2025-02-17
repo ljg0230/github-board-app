@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import BoardSearchForm from '@/components/board/BoardSearchForm';
 import BoardTable from '@/components/board/BoardTable';
-import BoardTableSkeleton from '@/components/board/BoardTableSkeleton';
+import BoardTableSkeleton from '@/components/board/skeleton/BoardTableSkeleton';
 import BoardPagination from '@/components/board/BoardPagination';
 import { useModal } from '@/contexts/ModalContext';
 import { useQuery } from '@tanstack/react-query';
 import { getBoardList } from '@/api/board';
+import { Helmet } from 'react-helmet-async';
 
 const QuestionBoard: React.FC = () => {
   const [page, setPage] = useState(1);
@@ -50,20 +51,17 @@ const QuestionBoard: React.FC = () => {
 
   return (
     <div>
+      <Helmet>
+        <title>질문게시판</title>
+      </Helmet>
       <h2 className="mb-4">질문게시판</h2>
-      
-      <BoardSearchForm 
-        onSearch={handleSearch}
-        onWrite={handleWrite}
-      />
+
+      <BoardSearchForm onSearch={handleSearch} onWrite={handleWrite} />
 
       {isLoading ? (
         <BoardTableSkeleton />
       ) : (
-        <BoardTable 
-          posts={data?.issues || []}
-          onPostClick={handlePostClick}
-        />
+        <BoardTable posts={data?.issues || []} onPostClick={handlePostClick} />
       )}
 
       <BoardPagination

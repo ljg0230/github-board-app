@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import ImageSlider from '../components/home/ImageSlider';
 import BoardList from '../components/home/BoardList';
 import { Row, Col } from 'react-bootstrap';
@@ -6,6 +7,9 @@ import { Row, Col } from 'react-bootstrap';
 export default function Home() {
   return (
     <div>
+      <Helmet>
+        <title>홈</title>
+      </Helmet>
       <section className="mb-4">
         <ImageSlider />
       </section>

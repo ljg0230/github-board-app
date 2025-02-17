@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import BoardDetail from '@/components/board/BoardDetail';
 import BoardDetailSkeleton from '@/components/board/BoardDetailSkeleton';
 import { useModal } from '@/contexts/ModalContext';
@@ -40,16 +41,21 @@ const FreeBoardDetail: React.FC = () => {
   }
 
   return (
-    <BoardDetail
-      boardName="자유게시판"
-      title={issue.title}
-      author={issue.user?.login || '알 수 없음'}
-      authorAvatar={issue.user?.avatar_url || ''}
-      createdAt={issue.created_at}
-      content={issue.body || ''}
-      onEdit={handleEdit}
-      onDelete={handleDelete}
-    />
+    <div>
+      <Helmet>
+        <title>{issue.title}</title>
+      </Helmet>
+      <BoardDetail
+        boardName="자유게시판"
+        title={issue.title}
+        author={issue.user?.login || '알 수 없음'}
+        authorAvatar={issue.user?.avatar_url || ''}
+        createdAt={issue.created_at}
+        content={issue.body || ''}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
+    </div>
   );
 };
 

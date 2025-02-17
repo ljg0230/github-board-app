@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import BoardWriteForm from '@/components/board/BoardWriteForm';
 import { createIssue } from '@/api/github';
 import { useModal } from '@/contexts/ModalContext';
+import { Helmet } from 'react-helmet-async';
 
 const FreeBoardWrite: React.FC = () => {
   const navigate = useNavigate();
@@ -20,10 +21,12 @@ const FreeBoardWrite: React.FC = () => {
   };
 
   return (
-    <BoardWriteForm 
-      boardName="자유게시판" 
-      onSubmit={handleSubmit}
-    />
+    <>
+      <Helmet>
+        <title>글쓰기</title>
+      </Helmet>
+      <BoardWriteForm boardName="자유게시판" onSubmit={handleSubmit} />
+    </>
   );
 };
 

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import BoardSearchForm from '@/components/board/BoardSearchForm';
 import BoardTable from '@/components/board/BoardTable';
-import BoardTableSkeleton from '@/components/board/BoardTableSkeleton';
+import BoardTableSkeleton from '@/components/board/skeleton/BoardTableSkeleton';
 import BoardPagination from '@/components/board/BoardPagination';
 import { useIssueList } from '@/hooks/useGitHubIssues';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 const FreeBoard: React.FC = () => {
   const [page, setPage] = useState(1);
@@ -35,20 +36,17 @@ const FreeBoard: React.FC = () => {
 
   return (
     <div>
+      <Helmet>
+        <title>자유게시판</title>
+      </Helmet>
       <h2 className="mb-4">자유게시판</h2>
-      
-      <BoardSearchForm 
-        onSearch={handleSearch}
-        onWrite={handleWrite}
-      />
+
+      <BoardSearchForm onSearch={handleSearch} onWrite={handleWrite} />
 
       {isLoading ? (
         <BoardTableSkeleton />
       ) : (
-        <BoardTable 
-          posts={data?.issues || []}
-          onPostClick={handlePostClick}
-        />
+        <BoardTable posts={data?.issues || []} onPostClick={handlePostClick} />
       )}
 
       <BoardPagination

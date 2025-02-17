@@ -1,7 +1,7 @@
 import React from 'react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
-import { Stack, Button } from 'react-bootstrap';
+import { Stack, Button, Row, Col } from 'react-bootstrap';
 
 const BoardDetailSkeleton: React.FC = () => {
   return (
@@ -19,20 +19,26 @@ const BoardDetailSkeleton: React.FC = () => {
           <Skeleton width={100} style={{ marginLeft: '8px' }} />
         </div>
       </div>
-      <div className="mb-4" style={{ minHeight: '200px' }}>
+      <div className="mb-4" style={{ minHeight: '300px' }}>
         <Skeleton count={5} />
       </div>
-      <Stack direction="horizontal" gap={2} className="justify-content-end">
-        <Button variant="secondary" disabled>
-          <Skeleton width={50} />
-        </Button>
-        <Button variant="secondary" disabled>
-          <Skeleton width={50} />
-        </Button>
-        <Button variant="primary" disabled>
-          <Skeleton width={50} />
-        </Button>
-      </Stack>
+      <Row className="justify-content-between">
+        <Col>
+          <Stack direction="horizontal" gap={2}>
+            <Button variant="secondary" disabled>
+              <Skeleton width={50} />
+            </Button>
+            <Button variant="secondary" disabled>
+              <Skeleton width={50} />
+            </Button>
+          </Stack>
+        </Col>
+        <Col className="text-end">
+          <Button variant="primary" disabled>
+            <Skeleton width={50} />
+          </Button>
+        </Col>
+      </Row>
     </div>
   );
 };
