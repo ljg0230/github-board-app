@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getIssueList, getIssue, getTotalIssueCount, createIssue } from '@/api/github';
+import { getIssueList, getIssue, getTotalIssueCount, createIssue, deleteIssue } from '@/api/github';
 import { BoardType, Issue } from '@/api/config';
 
 interface SearchParams {
@@ -21,10 +21,15 @@ export const useIssueList = (
   page: number = 1,
   searchParams?: SearchParams | null
 ) => {
+  const queryClient = useQueryClient();
+
   const { data: totalItems } = useQuery({
     queryKey: [TOTAL_COUNT_KEY, boardType],
     queryFn: () => getTotalIssueCount(boardType),
-    staleTime: 0
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true
   });
 
   return useQuery<IssueListResponse, Error>({
@@ -37,9 +42,12 @@ export const useIssueList = (
       };
     },
     retry: false,
-    refetchOnWindowFocus: false,
-    enabled: !!totalItems,
-    staleTime: 0
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    enabled: totalItems !== undefined,
+    staleTime: 0,
+    gcTime: 0,
+    networkMode: 'always'
   });
 };
 
@@ -65,7 +73,7 @@ export const useCreateIssue = () => {
       body: string;
     }) => createIssue(boardType, title, body),
     
-    onSuccess: async (newIssue) => {
+    onSuccess: async (newIssue, { boardType }) => {
       const formattedIssue: Issue = {
         number: newIssue.number,
         title: newIssue.title,
@@ -84,9 +92,8 @@ export const useCreateIssue = () => {
         state: newIssue.state as 'open' | 'closed'
       };
 
-
       queryClient.setQueryData<IssueListResponse>(
-        ['issues', 'FREE', 1],
+        ['issues', boardType, 1],
         (oldData) => {
           if (!oldData) return oldData;
           return {
@@ -98,21 +105,50 @@ export const useCreateIssue = () => {
       );
 
       queryClient.setQueryData<number>(
-        [TOTAL_COUNT_KEY, 'FREE'],
+        [TOTAL_COUNT_KEY, boardType],
         (oldCount = 0) => oldCount + 1
       );
 
       await queryClient.invalidateQueries({
-        queryKey: ['issues', 'FREE'],
+        queryKey: ['issues', boardType],
         exact: false,
         refetchType: 'all'
       });
 
       await queryClient.invalidateQueries({
-        queryKey: [TOTAL_COUNT_KEY, 'FREE'],
+        queryKey: [TOTAL_COUNT_KEY, boardType],
         exact: true,
         refetchType: 'all'
       });
+    }
+  });
+};
+
+export const useDeleteIssue = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ boardType, issueNumber }: {
+      boardType: BoardType;
+      issueNumber: number;
+    }) => deleteIssue(boardType, issueNumber),
+
+    onSuccess: async (_, { boardType }) => {
+      queryClient.removeQueries({
+        queryKey: ['issues', boardType]
+      });
+      queryClient.removeQueries({
+        queryKey: [TOTAL_COUNT_KEY, boardType]
+      });
+
+      queryClient.prefetchQuery({
+        queryKey: ['issues', boardType, 1],
+        queryFn: () => getIssueList(boardType, 1)
+      }),
+      queryClient.prefetchQuery({
+        queryKey: [TOTAL_COUNT_KEY, boardType],
+        queryFn: () => getTotalIssueCount(boardType)
+      })
     }
   });
 }; 

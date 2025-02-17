@@ -13,6 +13,7 @@ interface BoardDetailProps {
   content: string;
   onEdit?: () => void;
   onDelete?: () => void;
+  boardType: 'FREE' | 'QNA';
 }
 
 const BoardDetail: React.FC<BoardDetailProps> = ({
@@ -23,9 +24,15 @@ const BoardDetail: React.FC<BoardDetailProps> = ({
   createdAt,
   content,
   onEdit,
-  onDelete
+  onDelete,
+  boardType
 }) => {
   const navigate = useNavigate();
+
+  const handleListClick = () => {
+    const path = boardType === 'FREE' ? '/board/free' : '/board/qna';
+    navigate(path);
+  };
 
   return (
     <div className="boad-detail-container">
@@ -66,7 +73,7 @@ const BoardDetail: React.FC<BoardDetailProps> = ({
           </Stack>
         </Col>
         <Col className="text-end">
-          <Button variant="primary" onClick={() => navigate(-1)}>
+          <Button variant="primary" onClick={handleListClick}>
             목록
           </Button>
         </Col>

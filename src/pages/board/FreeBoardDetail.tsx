@@ -4,12 +4,13 @@ import { Helmet } from 'react-helmet-async';
 import BoardDetail from '@/components/board/BoardDetail';
 import BoardDetailSkeleton from '@/components/board/skeleton/BoardDetailSkeleton';
 import { useModal } from '@/contexts/ModalContext';
-import { useIssue } from '@/hooks/useGitHubIssues';
+import { useIssue, useDeleteIssue } from '@/hooks/useGitHubIssues';
 
 const FreeBoardDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { confirm } = useModal();
+  const deleteIssueMutation = useDeleteIssue();
   
   const { data: issue, isLoading, isError } = useIssue('FREE', Number(id));
 
@@ -19,16 +20,21 @@ const FreeBoardDetail: React.FC = () => {
 
   const handleDelete = async () => {
     const shouldDelete = await confirm({
-      title: '게시글 삭제',
-      message: '정말 삭제하시겠습니까?',
+      message: '삭제하시겠습니까?',
       confirmText: '삭제',
       cancelText: '취소'
     });
 
     if (shouldDelete) {
-      // GitHub Issue 삭제 로직 구현 예정
-      console.log('Delete issue:', id);
-      navigate('/board/free');
+      try {
+        await deleteIssueMutation.mutateAsync({
+          boardType: 'FREE',
+          issueNumber: Number(id)
+        });
+        navigate('/board/free');
+      } catch (error) {
+        console.error('삭제 실패:', error);
+      }
     }
   };
 
@@ -54,6 +60,7 @@ const FreeBoardDetail: React.FC = () => {
         content={issue.body || ''}
         onEdit={handleEdit}
         onDelete={handleDelete}
+        boardType="FREE"
       />
     </div>
   );

@@ -37,6 +37,7 @@ const QuestionBoardDetail: React.FC = () => {
       content="내용 내용 내용..."
       onEdit={handleEdit}
       onDelete={handleDelete}
+      boardType="QNA"
     />
   );
 };

@@ -21,7 +21,7 @@ export const getIssueList = async (
     
     // 검색어가 있는 경우
     if (searchParams?.keyword) {
-      const searchQuery = `repo:${owner}/${repo} ${
+      const searchQuery = `repo:${owner}/${repo} state:open ${
         searchParams.searchType === '제목' ? 'in:title' : 
         searchParams.searchType === '내용' ? 'in:body' : 
         'in:title,body'
@@ -63,11 +63,11 @@ export const getIssueList = async (
       };
     }
 
-    // 검색어가 없는 경우 기존 로직 사용
+    // 검색어가 없는 경우
     const response = await octokit.rest.issues.listForRepo({
       owner,
       repo,
-      state: 'all',
+      state: 'open',
       per_page: 10,
       page
     });
@@ -148,7 +148,7 @@ export const getTotalIssueCount = async (boardType: BoardType) => {
   const countResponse = await octokit.rest.issues.listForRepo({
     owner,
     repo,
-    state: 'all',
+    state: 'open',
     per_page: 1
   });
   
@@ -161,4 +161,20 @@ export const getTotalIssueCount = async (boardType: BoardType) => {
 
   const pageMatch = lastLink.match(/&page=(\d+)/);
   return pageMatch ? parseInt(pageMatch[1]) : 1;
+};
+
+export const deleteIssue = async (boardType: BoardType, issueNumber: number) => {
+  try {
+    const [owner, repo] = REPOS[boardType].split('/');
+    const response = await octokit.rest.issues.update({
+      owner,
+      repo,
+      issue_number: issueNumber,
+      state: 'closed'
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting issue:', error);
+    throw error;
+  }
 }; 
