@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
-import { getIssueList, getIssue, getTotalIssueCount } from '@/api/github';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { getIssueList, getIssue, getTotalIssueCount, createIssue } from '@/api/github';
 import { BoardType, Issue } from '@/api/config';
 
 interface SearchParams {
@@ -23,7 +23,8 @@ export const useIssueList = (
 ) => {
   const { data: totalItems } = useQuery({
     queryKey: [TOTAL_COUNT_KEY, boardType],
-    queryFn: () => getTotalIssueCount(boardType)
+    queryFn: () => getTotalIssueCount(boardType),
+    staleTime: 0
   });
 
   return useQuery<IssueListResponse, Error>({
@@ -37,7 +38,8 @@ export const useIssueList = (
     },
     retry: false,
     refetchOnWindowFocus: false,
-    enabled: !!totalItems
+    enabled: !!totalItems,
+    staleTime: 0
   });
 };
 
@@ -49,5 +51,68 @@ export const useIssue = (boardType: BoardType, issueNumber: number) => {
     retry: false,
     refetchOnWindowFocus: false,
     enabled: !!issueNumber
+  });
+};
+
+// 이슈 등록 mutation hook
+export const useCreateIssue = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ boardType, title, body }: {
+      boardType: BoardType;
+      title: string;
+      body: string;
+    }) => createIssue(boardType, title, body),
+    
+    onSuccess: async (newIssue) => {
+      const formattedIssue: Issue = {
+        number: newIssue.number,
+        title: newIssue.title,
+        body: newIssue.body || '',
+        created_at: newIssue.created_at,
+        updated_at: newIssue.updated_at,
+        comments: newIssue.comments,
+        user: {
+          login: newIssue.user?.login || '',
+          avatar_url: newIssue.user?.avatar_url || ''
+        },
+        labels: newIssue.labels.map(label => ({
+          name: typeof label === 'string' ? label : (label.name || ''),
+          color: typeof label === 'string' ? '' : (label.color || '')
+        })),
+        state: newIssue.state as 'open' | 'closed'
+      };
+
+
+      queryClient.setQueryData<IssueListResponse>(
+        ['issues', 'FREE', 1],
+        (oldData) => {
+          if (!oldData) return oldData;
+          return {
+            ...oldData,
+            issues: [formattedIssue, ...oldData.issues].slice(0, ITEMS_PER_PAGE),
+            totalPages: Math.ceil((oldData.issues.length + 1) / ITEMS_PER_PAGE)
+          };
+        }
+      );
+
+      queryClient.setQueryData<number>(
+        [TOTAL_COUNT_KEY, 'FREE'],
+        (oldCount = 0) => oldCount + 1
+      );
+
+      await queryClient.invalidateQueries({
+        queryKey: ['issues', 'FREE'],
+        exact: false,
+        refetchType: 'all'
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: [TOTAL_COUNT_KEY, 'FREE'],
+        exact: true,
+        refetchType: 'all'
+      });
+    }
   });
 }; 

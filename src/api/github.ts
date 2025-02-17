@@ -157,10 +157,8 @@ export const getTotalIssueCount = async (boardType: BoardType) => {
 
   const links = linkHeader.split(', ');
   const lastLink = links.find(link => link.endsWith('rel="last"'));
-  console.log('lastLink:', lastLink);
   if (!lastLink) return 1;
 
   const pageMatch = lastLink.match(/&page=(\d+)/);
-  console.log('pageMatch:', pageMatch);
   return pageMatch ? parseInt(pageMatch[1]) : 1;
 }; 
