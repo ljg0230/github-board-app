@@ -1,38 +1,24 @@
-import React, { useState, useMemo } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import BoardSearchForm from '@/components/board/BoardSearchForm';
 import BoardTable from '@/components/board/BoardTable';
 import BoardTableSkeleton from '@/components/board/skeleton/BoardTableSkeleton';
 import BoardPagination from '@/components/board/BoardPagination';
-import { useIssueList } from '@/hooks/useGitHubIssues';
+import { useBoardData } from '@/hooks/useBoardData';
 
 const QuestionBoard: React.FC = () => {
   const navigate = useNavigate();
-  const [page, setPage] = useState(1);
-  const [searchParams, setSearchParams] = useState<{
-    searchType: string;
-    keyword: string;
-  } | null>(null);
-
-  const { data, isLoading, isFetching, cancelSearch } = useIssueList(
-    'QNA',
+  const {
+    issues,
+    totalPages,
+    isLoading,
+    isFetching,
     page,
-    searchParams
-  );
-
-  const filteredIssues = useMemo(() => {
-    return data?.issues.filter((issue) => issue.state !== 'closed');
-  }, [data]);
-
-  const handleSearch = (searchType: string, keyword: string) => {
-    if (keyword.trim()) {
-      setSearchParams({ searchType, keyword });
-    } else {
-      setSearchParams(null);
-    }
-    setPage(1);
-  };
+    setPage,
+    handleSearch,
+    cancelSearch
+  } = useBoardData('QNA');
 
   const handleWrite = () => {
     navigate('write');
@@ -57,12 +43,12 @@ const QuestionBoard: React.FC = () => {
       ) : (
         <>
           <BoardTable
-            posts={filteredIssues || []}
+            posts={issues}
             onPostClick={(issueNumber) => navigate(`${issueNumber}`)}
           />
           <BoardPagination
             currentPage={page}
-            totalPages={data?.totalPages || 1}
+            totalPages={totalPages}
             onPageChange={setPage}
           />
         </>
