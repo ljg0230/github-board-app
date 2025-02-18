@@ -47,6 +47,20 @@ textarea {
 }
 
 .swiper-pagination {
-  position:relative;
-  margin-top:5px;
+  position: relative;
+  margin-top: 20px;
+}
+
+.slider-container {
+  width: 100%;
+  height: 400px;
+  background-color: #000;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.banner-image {
+  width: 70%;
+  object-fit: cover;
+  border-radius: 16px;
 }

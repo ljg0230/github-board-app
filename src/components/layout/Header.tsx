@@ -47,11 +47,11 @@ const Header: React.FC = () => {
             </Nav.Link>
             <Nav.Link
               as={Link}
-              to="/board/question"
-              style={navLinkStyle('/board/question')}
+              to="/board/qna"
+              style={navLinkStyle('/board/qna')}
               onMouseOver={(e) => (e.currentTarget.style.color = '#007bff')}
               onMouseOut={(e) =>
-                (e.currentTarget.style.color = isActivePath('/board/question')
+                (e.currentTarget.style.color = isActivePath('/board/qna')
                   ? '#007bff'
                   : '#333333')
               }

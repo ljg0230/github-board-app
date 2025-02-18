@@ -8,6 +8,7 @@ import QuestionBoardWrite from '../pages/board/QuestionBoardWrite';
 import FreeBoardDetail from '../pages/board/FreeBoardDetail';
 import QuestionBoardDetail from '@/pages/board/QuestionBoardDetail';
 import FreeBoardEdit from '@/pages/board/FreeBoardEdit';
+import QuestionBoardEdit from '@/pages/board/QuestionBoardEdit';
 
 export const router = createBrowserRouter([
   {
@@ -22,7 +23,7 @@ export const router = createBrowserRouter([
         path: 'board',
         children: [
           {
-            path: 'question',
+            path: 'qna',
             children: [
               {
                 index: true,
@@ -35,6 +36,10 @@ export const router = createBrowserRouter([
               {
                 path: ':id',
                 element: <QuestionBoardDetail />
+              },
+              {
+                path: ':id/edit',
+                element: <QuestionBoardEdit />
               }
             ]
           },

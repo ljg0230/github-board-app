@@ -1,53 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import BoardSearchForm from '@/components/board/BoardSearchForm';
 import BoardTable from '@/components/board/BoardTable';
 import BoardTableSkeleton from '@/components/board/skeleton/BoardTableSkeleton';
 import BoardPagination from '@/components/board/BoardPagination';
-import { useModal } from '@/contexts/ModalContext';
-import { useQuery } from '@tanstack/react-query';
-import { getBoardList } from '@/api/board';
-import { Helmet } from 'react-helmet-async';
+import { useIssueList } from '@/hooks/useGitHubIssues';
 
 const QuestionBoard: React.FC = () => {
+  const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [searchParams, setSearchParams] = useState<{
     searchType: string;
     keyword: string;
   } | null>(null);
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['board', 'QNA', page, searchParams],
-    queryFn: () =>
-      getBoardList(
-        'QNA',
-        page,
-        10,
-        searchParams?.searchType,
-        searchParams?.keyword
-      )
-  });
+  const { data, isLoading, isFetching, cancelSearch } = useIssueList(
+    'QNA',
+    page,
+    searchParams
+  );
 
-  const { confirm } = useModal();
+  const filteredIssues = useMemo(() => {
+    return data?.issues.filter((issue) => issue.state !== 'closed');
+  }, [data]);
 
   const handleSearch = (searchType: string, keyword: string) => {
-    setSearchParams({ searchType, keyword });
+    if (keyword.trim()) {
+      setSearchParams({ searchType, keyword });
+    } else {
+      setSearchParams(null);
+    }
     setPage(1);
   };
 
   const handleWrite = () => {
-    console.log('글쓰기');
-  };
-
-  const handlePostClick = async (postId: number) => {
-    const confirmed = await confirm({
-      message: `게시글 번호 ${postId}를 보시겠습니까?`,
-      confirmText: '이동하기',
-      cancelText: '취소'
-    });
-
-    if (confirmed) {
-      console.log('게시글 상세 보기로 이동:', postId);
-    }
+    navigate('write');
   };
 
   return (
@@ -57,19 +45,28 @@ const QuestionBoard: React.FC = () => {
       </Helmet>
       <h2 className="mb-4">질문게시판</h2>
 
-      <BoardSearchForm onSearch={handleSearch} onWrite={handleWrite} />
+      <BoardSearchForm
+        onSearch={handleSearch}
+        onWrite={handleWrite}
+        onCancelSearch={cancelSearch}
+        isLoading={isLoading || isFetching}
+      />
 
-      {isLoading ? (
+      {isLoading || isFetching ? (
         <BoardTableSkeleton />
       ) : (
-        <BoardTable posts={data?.issues || []} onPostClick={handlePostClick} />
+        <>
+          <BoardTable
+            posts={filteredIssues || []}
+            onPostClick={(issueNumber) => navigate(`${issueNumber}`)}
+          />
+          <BoardPagination
+            currentPage={page}
+            totalPages={data?.totalPages || 1}
+            onPageChange={setPage}
+          />
+        </>
       )}
-
-      <BoardPagination
-        currentPage={data?.pagination.currentPage || 1}
-        totalPages={data?.pagination.totalPages || 0}
-        onPageChange={setPage}
-      />
     </div>
   );
 };

@@ -16,7 +16,7 @@ const BoardList: React.FC<BoardListProps> = ({ title, type, issues }) => {
         <Link to={`/board/${type}`}>{title}</Link>
       </h3>
       <div
-        className="p-3 border rounded d-flex align-items-center justify-content-center"
+        className="p-3 border rounded d-flex justify-content-center"
         style={{ minHeight: '200px', borderColor: '#ddd' }}
       >
         {issues && issues.length > 0 ? (
