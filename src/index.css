@@ -45,3 +45,8 @@ a {
 textarea {
   resize: none;
 }
+
+.swiper-pagination {
+  position:relative;
+  margin-top:5px;
+}
