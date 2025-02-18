@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import BoardSearchForm from '@/components/board/BoardSearchForm';
@@ -15,7 +15,14 @@ const FreeBoard: React.FC = () => {
     keyword: string;
   } | null>(null);
 
-  const { data, isLoading, isFetching, cancelSearch } = useIssueList('FREE', page, searchParams);
+  const { data, isLoading, isFetching, cancelSearch } = useIssueList(
+    'FREE',
+    page,
+    searchParams,
+  );
+  const filteredIssues = useMemo(() => {
+    return data?.issues.filter(issue => issue.state !== 'closed');
+  }, [data]);
 
   const handleSearch = (searchType: string, keyword: string) => {
     if (keyword.trim()) {
@@ -37,8 +44,8 @@ const FreeBoard: React.FC = () => {
       </Helmet>
       <h2 className="mb-4">자유게시판</h2>
 
-      <BoardSearchForm 
-        onSearch={handleSearch} 
+      <BoardSearchForm
+        onSearch={handleSearch}
         onWrite={handleWrite}
         onCancelSearch={cancelSearch}
         isLoading={isLoading}
@@ -47,16 +54,18 @@ const FreeBoard: React.FC = () => {
       {isLoading || isFetching ? (
         <BoardTableSkeleton />
       ) : (
-        <BoardTable
-          posts={data?.issues || []}
-          onPostClick={(issueNumber) => navigate(`${issueNumber}`)}
-        />
+        <>
+          <BoardTable
+            posts={filteredIssues || []}
+            onPostClick={(issueNumber) => navigate(`${issueNumber}`)}
+          />
+          <BoardPagination
+            currentPage={page}
+            totalPages={data?.totalPages || 1}
+            onPageChange={setPage}
+          />
+        </>
       )}
-      <BoardPagination
-        currentPage={page}
-        totalPages={data?.totalPages || 1}
-        onPageChange={setPage}
-      />
     </div>
   );
 };

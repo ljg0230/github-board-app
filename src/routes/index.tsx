@@ -7,6 +7,7 @@ import FreeBoardWrite from '../pages/board/FreeBoardWrite';
 import QuestionBoardWrite from '../pages/board/QuestionBoardWrite';
 import FreeBoardDetail from '../pages/board/FreeBoardDetail';
 import QuestionBoardDetail from '@/pages/board/QuestionBoardDetail';
+import FreeBoardEdit from '@/pages/board/FreeBoardEdit';
 
 export const router = createBrowserRouter([
   {
@@ -51,6 +52,10 @@ export const router = createBrowserRouter([
               {
                 path: ':id',
                 element: <FreeBoardDetail />,
+              },
+              {
+                path: ':id/edit',
+                element: <FreeBoardEdit />,
               },
             ],
           },

@@ -5,7 +5,6 @@ import Header from './components/layout/Header';
 import { Container } from 'react-bootstrap';
 import { ModalProvider } from './contexts/ModalContext';
 import ModalManager from './components/common/ModalManager';
-import './App.css';
 
 const App: React.FC = () => {
   return (

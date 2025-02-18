@@ -15,17 +15,19 @@ export const getIssueList = async (
   boardType: BoardType,
   page: number = 1,
   searchParams?: { searchType: string; keyword: string },
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ): Promise<IssueListResponse> => {
   try {
     const [owner, repo] = REPOS[boardType].split('/');
     const perPage = 10;
-    
-    const searchQuery = searchParams?.keyword 
+
+    const searchQuery = searchParams?.keyword
       ? `repo:${owner}/${repo} state:open ${
-          searchParams.searchType === '제목' ? 'in:title' : 
-          searchParams.searchType === '내용' ? 'in:body' : 
-          'in:title,body'
+          searchParams.searchType === '제목'
+            ? 'in:title'
+            : searchParams.searchType === '내용'
+              ? 'in:body'
+              : 'in:title,body'
         } ${searchParams.keyword}`
       : `repo:${owner}/${repo} state:open`;
 
@@ -34,11 +36,11 @@ export const getIssueList = async (
       per_page: perPage,
       page,
       request: {
-        signal
-      }
+        signal,
+      },
     });
 
-    const issues: Issue[] = searchResponse.data.items.map(item => ({
+    const issues: Issue[] = searchResponse.data.items.map((item) => ({
       number: item.number,
       title: item.title,
       body: item.body || '',
@@ -47,13 +49,13 @@ export const getIssueList = async (
       comments: item.comments,
       user: {
         login: item.user?.login || '',
-        avatar_url: item.user?.avatar_url || ''
+        avatar_url: item.user?.avatar_url || '',
       },
-      labels: item.labels.map(label => ({
-        name: typeof label === 'string' ? label : (label.name || ''),
-        color: typeof label === 'string' ? '' : (label.color || '')
+      labels: item.labels.map((label) => ({
+        name: typeof label === 'string' ? label : label.name || '',
+        color: typeof label === 'string' ? '' : label.color || '',
       })),
-      state: item.state as 'open' | 'closed'
+      state: item.state as 'open' | 'closed',
     }));
 
     const totalCount = searchResponse.data.total_count;
@@ -66,8 +68,8 @@ export const getIssueList = async (
         currentPage: page,
         perPage,
         hasNextPage: page < totalPages,
-        hasPrevPage: page > 1
-      }
+        hasPrevPage: page > 1,
+      },
     };
   } catch (error) {
     if (error instanceof Error && error.name === 'AbortError') {
@@ -84,7 +86,7 @@ export const getIssue = async (boardType: BoardType, issueNumber: number) => {
     const response = await octokit.rest.issues.get({
       owner,
       repo,
-      issue_number: issueNumber
+      issue_number: issueNumber,
     });
 
     return response.data;
@@ -97,7 +99,7 @@ export const getIssue = async (boardType: BoardType, issueNumber: number) => {
 export const createIssue = async (
   boardType: BoardType,
   title: string,
-  body: string
+  body: string,
 ) => {
   try {
     const [owner, repo] = REPOS[boardType].split('/');
@@ -105,7 +107,7 @@ export const createIssue = async (
       owner,
       repo,
       title,
-      body
+      body,
     });
 
     return response.data;
@@ -121,32 +123,58 @@ export const getTotalIssueCount = async (boardType: BoardType) => {
     owner,
     repo,
     state: 'open',
-    per_page: 1
+    per_page: 1,
   });
-  
+
   const linkHeader = countResponse.headers.link;
   if (!linkHeader) return 1;
 
   const links = linkHeader.split(', ');
-  const lastLink = links.find(link => link.endsWith('rel="last"'));
+  const lastLink = links.find((link) => link.endsWith('rel="last"'));
   if (!lastLink) return 1;
 
   const pageMatch = lastLink.match(/&page=(\d+)/);
   return pageMatch ? parseInt(pageMatch[1]) : 1;
 };
 
-export const deleteIssue = async (boardType: BoardType, issueNumber: number) => {
+export const deleteIssue = async (
+  boardType: BoardType,
+  issueNumber: number,
+) => {
   try {
     const [owner, repo] = REPOS[boardType].split('/');
     const response = await octokit.rest.issues.update({
       owner,
       repo,
       issue_number: issueNumber,
-      state: 'closed'
+      state: 'closed',
     });
     return response.data;
   } catch (error) {
     console.error('Error deleting issue:', error);
     throw error;
   }
-}; 
+};
+
+export const updateIssue = async (
+  boardType: BoardType,
+  issueNumber: number,
+  title: string,
+  body: string,
+) => {
+  try {
+    const [owner, repo] = REPOS[boardType].split('/');
+    const response = await octokit.rest.issues.update({
+      owner,
+      repo,
+      issue_number: issueNumber,
+      title,
+      body,
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Error updating issue:', error);
+    throw error;
+  }
+};
