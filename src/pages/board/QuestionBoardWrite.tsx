@@ -7,12 +7,7 @@ const QuestionBoardWrite: React.FC = () => {
     console.log('질문게시판 글쓰기:', { title, content });
   };
 
-  return (
-    <BoardWriteForm 
-      boardName="질문게시판" 
-      onSubmit={handleSubmit}
-    />
-  );
+  return <BoardWriteForm boardName="질문게시판" onSubmit={handleSubmit} />;
 };
 
-export default QuestionBoardWrite; 
+export default QuestionBoardWrite;

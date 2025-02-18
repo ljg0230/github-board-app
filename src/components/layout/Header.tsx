@@ -20,36 +20,57 @@ const Header: React.FC = () => {
   });
 
   return (
-    <Navbar 
-      style={{ backgroundColor: '#ffffff', borderBottom: '1px solid #eaeaea' }} 
+    <Navbar
+      style={{ backgroundColor: '#ffffff', borderBottom: '1px solid #eaeaea' }}
       expand="md"
       className="justify-content-center"
     >
       <Container>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav" className="justify-content-md-center">
+        <Navbar.Collapse
+          id="basic-navbar-nav"
+          className="justify-content-md-center"
+        >
           <Nav>
-            <Nav.Link 
-              as={Link} 
-              to="/" 
+            <Nav.Link
+              as={Link}
+              to="/"
               style={navLinkStyle('/')}
-              onMouseOver={e => e.currentTarget.style.color = '#007bff'}
-              onMouseOut={e => e.currentTarget.style.color = isActivePath('/') ? '#007bff' : '#333333'}
-            >홈</Nav.Link>
-            <Nav.Link 
-              as={Link} 
-              to="/board/question" 
+              onMouseOver={(e) => (e.currentTarget.style.color = '#007bff')}
+              onMouseOut={(e) =>
+                (e.currentTarget.style.color = isActivePath('/')
+                  ? '#007bff'
+                  : '#333333')
+              }
+            >
+              홈
+            </Nav.Link>
+            <Nav.Link
+              as={Link}
+              to="/board/question"
               style={navLinkStyle('/board/question')}
-              onMouseOver={e => e.currentTarget.style.color = '#007bff'}
-              onMouseOut={e => e.currentTarget.style.color = isActivePath('/board/question') ? '#007bff' : '#333333'}
-            >질문게시판</Nav.Link>
-            <Nav.Link 
-              as={Link} 
-              to="/board/free" 
+              onMouseOver={(e) => (e.currentTarget.style.color = '#007bff')}
+              onMouseOut={(e) =>
+                (e.currentTarget.style.color = isActivePath('/board/question')
+                  ? '#007bff'
+                  : '#333333')
+              }
+            >
+              질문게시판
+            </Nav.Link>
+            <Nav.Link
+              as={Link}
+              to="/board/free"
               style={navLinkStyle('/board/free')}
-              onMouseOver={e => e.currentTarget.style.color = '#007bff'}
-              onMouseOut={e => e.currentTarget.style.color = isActivePath('/board/free') ? '#007bff' : '#333333'}
-            >자유게시판</Nav.Link>
+              onMouseOver={(e) => (e.currentTarget.style.color = '#007bff')}
+              onMouseOut={(e) =>
+                (e.currentTarget.style.color = isActivePath('/board/free')
+                  ? '#007bff'
+                  : '#333333')
+              }
+            >
+              자유게시판
+            </Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

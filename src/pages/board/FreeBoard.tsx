@@ -18,10 +18,10 @@ const FreeBoard: React.FC = () => {
   const { data, isLoading, isFetching, cancelSearch } = useIssueList(
     'FREE',
     page,
-    searchParams,
+    searchParams
   );
   const filteredIssues = useMemo(() => {
-    return data?.issues.filter(issue => issue.state !== 'closed');
+    return data?.issues.filter((issue) => issue.state !== 'closed');
   }, [data]);
 
   const handleSearch = (searchType: string, keyword: string) => {
@@ -70,4 +70,4 @@ const FreeBoard: React.FC = () => {
   );
 };
 
-export default FreeBoard; 
+export default FreeBoard;

@@ -1,8 +1,8 @@
 export const formatDateTime = (dateString: string): string => {
   const date = new Date(dateString);
-  
+
   const koreanDate = new Date(date.getTime() + 9 * 60 * 60 * 1000);
-  
+
   const year = koreanDate.getUTCFullYear();
   const month = String(koreanDate.getUTCMonth() + 1).padStart(2, '0');
   const day = String(koreanDate.getUTCDate()).padStart(2, '0');
@@ -17,7 +17,7 @@ export const formatDateTime = (dateString: string): string => {
 export const formatDateOrTimeIfToday = (dateString: string): string => {
   const date = new Date(dateString);
   const koreanDate = new Date(date.getTime() + 9 * 60 * 60 * 1000);
-  
+
   const year = koreanDate.getUTCFullYear();
   const month = String(koreanDate.getUTCMonth() + 1).padStart(2, '0');
   const day = String(koreanDate.getUTCDate()).padStart(2, '0');
@@ -28,10 +28,12 @@ export const formatDateOrTimeIfToday = (dateString: string): string => {
   const now = new Date();
   const koreanNow = new Date(now.getTime() + 9 * 60 * 60 * 1000);
 
-  const isToday = 
+  const isToday =
     koreanDate.getUTCFullYear() === koreanNow.getUTCFullYear() &&
     koreanDate.getUTCMonth() === koreanNow.getUTCMonth() &&
     koreanDate.getUTCDate() === koreanNow.getUTCDate();
 
-  return isToday ? `${hours}:${minutes}` : `${year}-${month}-${day} ${hours}:${minutes}`;
+  return isToday
+    ? `${hours}:${minutes}`
+    : `${year}-${month}-${day} ${hours}:${minutes}`;
 };

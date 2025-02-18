@@ -11,21 +11,21 @@ export default function Home() {
   const {
     data: freeBoardData,
     isLoading: isFreeBoardLoading,
-    isError: isFreeBoardError,
+    isError: isFreeBoardError
   } = useQuery({
     queryKey: ['issues', 'free'],
     queryFn: () => getIssueList('FREE', 1),
-    select: (data) => data.issues.slice(0, 5),
+    select: (data) => data.issues.slice(0, 5)
   });
 
   const {
     data: questionBoardData,
     isLoading: isQuestionBoardLoading,
-    isError: isQuestionBoardError,
+    isError: isQuestionBoardError
   } = useQuery({
     queryKey: ['issues', 'question'],
     queryFn: () => getIssueList('QNA', 1),
-    select: (data) => data.issues.slice(0, 5),
+    select: (data) => data.issues.slice(0, 5)
   });
 
   return (

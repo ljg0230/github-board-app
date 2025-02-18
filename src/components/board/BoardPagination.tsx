@@ -10,7 +10,7 @@ interface BoardPaginationProps {
 const BoardPagination: React.FC<BoardPaginationProps> = ({
   currentPage,
   totalPages,
-  onPageChange,
+  onPageChange
 }) => {
   const pageGroupSize = 10;
   const currentGroup = Math.floor((currentPage - 1) / pageGroupSize);
@@ -20,7 +20,7 @@ const BoardPagination: React.FC<BoardPaginationProps> = ({
   const pageNumbers = Array.from(
     { length: endPage - startPage + 1 },
     (_, i) => startPage + i
-  ).filter(pageNum => pageNum <= totalPages);
+  ).filter((pageNum) => pageNum <= totalPages);
 
   return (
     <Stack direction="horizontal" className="justify-content-center mt-5">
@@ -37,7 +37,7 @@ const BoardPagination: React.FC<BoardPaginationProps> = ({
           disabled={startPage === 1}
         />
 
-        {pageNumbers.map(pageNum => (
+        {pageNumbers.map((pageNum) => (
           <Pagination.Item
             key={pageNum}
             active={pageNum === currentPage}
@@ -63,4 +63,4 @@ const BoardPagination: React.FC<BoardPaginationProps> = ({
   );
 };
 
-export default BoardPagination; 
+export default BoardPagination;

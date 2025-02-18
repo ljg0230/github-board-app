@@ -9,7 +9,12 @@ interface BoardSearchFormProps {
   isLoading: boolean;
 }
 
-const BoardSearchForm: React.FC<BoardSearchFormProps> = ({ onSearch, onWrite, onCancelSearch, isLoading }) => {
+const BoardSearchForm: React.FC<BoardSearchFormProps> = ({
+  onSearch,
+  onWrite,
+  onCancelSearch,
+  isLoading
+}) => {
   const [searchType, setSearchType] = useState('제목');
   const [keyword, setKeyword] = useState('');
   const { alert } = useModal();
@@ -26,7 +31,7 @@ const BoardSearchForm: React.FC<BoardSearchFormProps> = ({ onSearch, onWrite, on
   return (
     <Form onSubmit={handleSubmit} className="mb-4">
       <Stack direction="horizontal" gap={2}>
-        <Form.Select 
+        <Form.Select
           value={searchType}
           onChange={(e) => setSearchType(e.target.value)}
           style={{ width: '120px' }}
@@ -43,19 +48,20 @@ const BoardSearchForm: React.FC<BoardSearchFormProps> = ({ onSearch, onWrite, on
           style={{ maxWidth: '300px' }}
         />
 
-        <Button type="submit" variant="secondary">검색</Button>
+        <Button type="submit" variant="secondary">
+          검색
+        </Button>
         {isLoading && (
-          <Button 
-            variant="outline-secondary" 
-            onClick={onCancelSearch}
-          >
+          <Button variant="outline-secondary" onClick={onCancelSearch}>
             검색 취소
           </Button>
         )}
-        <Button variant="primary" onClick={onWrite} className="ms-auto">글쓰기</Button>
+        <Button variant="primary" onClick={onWrite} className="ms-auto">
+          글쓰기
+        </Button>
       </Stack>
     </Form>
   );
 };
 
-export default BoardSearchForm; 
+export default BoardSearchForm;

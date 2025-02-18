@@ -14,13 +14,13 @@ const BoardWriteForm: React.FC<BoardWriteFormProps> = ({
   boardName,
   onSubmit,
   initialTitle = '',
-  initialContent = '',
+  initialContent = ''
 }) => {
   const [title, setTitle] = useState(initialTitle);
   const [content, setContent] = useState(initialContent);
   const [touched, setTouched] = useState({
     title: false,
-    content: false,
+    content: false
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
@@ -48,7 +48,7 @@ const BoardWriteForm: React.FC<BoardWriteFormProps> = ({
           message:
             '이 페이지를 벗어나면 작성 중인 내용이 사라집니다.\n\n이동하시겠습니까?',
           confirmText: '이동하기',
-          cancelText: '취소',
+          cancelText: '취소'
         });
 
         if (shouldProceed) {
@@ -84,7 +84,7 @@ const BoardWriteForm: React.FC<BoardWriteFormProps> = ({
 
     setTouched({
       title: true,
-      content: true,
+      content: true
     });
 
     if (!title.trim() || !content.trim()) {
@@ -141,7 +141,7 @@ const BoardWriteForm: React.FC<BoardWriteFormProps> = ({
             style={{
               borderColor: isFieldInvalid('content', content)
                 ? '#dc3545'
-                : undefined,
+                : undefined
             }}
             required
           />

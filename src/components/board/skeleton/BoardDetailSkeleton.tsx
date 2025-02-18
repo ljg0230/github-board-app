@@ -14,7 +14,12 @@ const BoardDetailSkeleton: React.FC = () => {
           <Skeleton width="60%" />
         </h3>
         <div className="text-muted d-flex align-items-center">
-          <Skeleton circle width={24} height={24} style={{ marginRight: '8px' }} />
+          <Skeleton
+            circle
+            width={24}
+            height={24}
+            style={{ marginRight: '8px' }}
+          />
           <Skeleton width={80} />
           <Skeleton width={100} style={{ marginLeft: '8px' }} />
         </div>

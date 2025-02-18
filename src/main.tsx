@@ -13,10 +13,9 @@ const queryClient = new QueryClient({
       staleTime: 0,
       gcTime: 0,
       refetchOnMount: true,
-      refetchOnWindowFocus: true,
-      retry: 1,
-    },
-  },
+      retry: 1
+    }
+  }
 });
 
 const Root = () => (

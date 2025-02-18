@@ -11,7 +11,7 @@ const FreeBoardDetail: React.FC = () => {
   const navigate = useNavigate();
   const { confirm } = useModal();
   const deleteIssueMutation = useDeleteIssue();
-  
+
   const { data: issue, isLoading, isError } = useIssue('FREE', Number(id));
 
   const handleEdit = () => {

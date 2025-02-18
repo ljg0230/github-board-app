@@ -14,20 +14,21 @@ const QuestionBoard: React.FC = () => {
     searchType: string;
     keyword: string;
   } | null>(null);
-  
+
   const { data, isLoading } = useQuery({
     queryKey: ['board', 'QNA', page, searchParams],
-    queryFn: () => getBoardList(
-      'QNA', 
-      page, 
-      10, 
-      searchParams?.searchType,
-      searchParams?.keyword
-    )
+    queryFn: () =>
+      getBoardList(
+        'QNA',
+        page,
+        10,
+        searchParams?.searchType,
+        searchParams?.keyword
+      )
   });
 
   const { confirm } = useModal();
-  
+
   const handleSearch = (searchType: string, keyword: string) => {
     setSearchParams({ searchType, keyword });
     setPage(1);
@@ -43,7 +44,7 @@ const QuestionBoard: React.FC = () => {
       confirmText: '이동하기',
       cancelText: '취소'
     });
-    
+
     if (confirmed) {
       console.log('게시글 상세 보기로 이동:', postId);
     }
@@ -73,4 +74,4 @@ const QuestionBoard: React.FC = () => {
   );
 };
 
-export default QuestionBoard; 
+export default QuestionBoard;

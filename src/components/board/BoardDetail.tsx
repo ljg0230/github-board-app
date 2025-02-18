@@ -40,21 +40,24 @@ const BoardDetail: React.FC<BoardDetailProps> = ({
       <div className="boad-detail-head border-bottom pb-3 mb-3">
         <h3 className="mb-3">{title}</h3>
         <div className="text-muted d-flex align-items-center">
-          <img 
-            src={authorAvatar} 
-            alt={author} 
-            style={{ 
-              width: '24px', 
-              height: '24px', 
+          <img
+            src={authorAvatar}
+            alt={author}
+            style={{
+              width: '24px',
+              height: '24px',
               borderRadius: '50%',
               marginRight: '8px'
-            }} 
+            }}
           />
           <span className="me-2">{author}</span>
           <span>{formatDateTime(createdAt)}</span>
         </div>
       </div>
-      <div className="boad-detail-contents mb-4 border-bottom" style={{ minHeight: '300px' }}>
+      <div
+        className="boad-detail-contents mb-4 border-bottom"
+        style={{ minHeight: '300px' }}
+      >
         <ReactMarkdown>{content}</ReactMarkdown>
       </div>
       <Row className="justify-content-between boad-detail-bottom">

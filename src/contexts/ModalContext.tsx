@@ -1,4 +1,9 @@
-import React, { createContext, useContext, useReducer, useCallback } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useReducer,
+  useCallback
+} from 'react';
 import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import AlertModal from '../components/common/AlertModal';
@@ -24,7 +29,11 @@ interface ConfirmOptions extends AlertOptions {
 
 const ModalContext = createContext<{
   state: ModalState;
-  openModal: (id: string, component: React.ComponentType<any>, props?: any) => void;
+  openModal: (
+    id: string,
+    component: React.ComponentType<any>,
+    props?: any
+  ) => void;
   closeModal: (id: string) => void;
   closeAllModals: () => void;
   alert: (message: string, options?: AlertOptions) => void;
@@ -32,7 +41,7 @@ const ModalContext = createContext<{
 } | null>(null);
 
 const initialState: ModalState = {
-  modals: [],
+  modals: []
 };
 
 const modalReducer = (state: ModalState, action: any): ModalState => {
@@ -40,24 +49,26 @@ const modalReducer = (state: ModalState, action: any): ModalState => {
     case 'OPEN_MODAL':
       return {
         ...state,
-        modals: [...state.modals, action.payload],
+        modals: [...state.modals, action.payload]
       };
     case 'CLOSE_MODAL':
       return {
         ...state,
-        modals: state.modals.filter((modal) => modal.id !== action.payload.id),
+        modals: state.modals.filter((modal) => modal.id !== action.payload.id)
       };
     case 'CLOSE_ALL':
       return {
         ...state,
-        modals: [],
+        modals: []
       };
     default:
       return state;
   }
 };
 
-export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({
+  children
+}) => {
   const [state, dispatch] = useReducer(modalReducer, initialState);
   const location = useLocation();
 
@@ -78,9 +89,12 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     };
   }, [state.modals]);
 
-  const openModal = useCallback((id: string, component: React.ComponentType<any>, props: any = {}) => {
-    dispatch({ type: 'OPEN_MODAL', payload: { id, component, props } });
-  }, []);
+  const openModal = useCallback(
+    (id: string, component: React.ComponentType<any>, props: any = {}) => {
+      dispatch({ type: 'OPEN_MODAL', payload: { id, component, props } });
+    },
+    []
+  );
 
   const closeModal = useCallback((id: string) => {
     dispatch({ type: 'CLOSE_MODAL', payload: { id } });
@@ -90,44 +104,52 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     dispatch({ type: 'CLOSE_ALL' });
   }, []);
 
-  const alert = useCallback((message: string, options: AlertOptions = {}) => {
-    const id = `alert-${Date.now()}`;
-    openModal(id, AlertModal, {
-      message,
-      title: options.title,
-      confirmText: options.confirmText
-    });
-  }, [openModal]);
-
-  const confirm = useCallback((options: ConfirmOptions): Promise<boolean> => {
-    return new Promise((resolve) => {
-      const id = `confirm-${Date.now()}`;
-      openModal(id, ConfirmModal, {
-        message: options.message,
+  const alert = useCallback(
+    (message: string, options: AlertOptions = {}) => {
+      const id = `alert-${Date.now()}`;
+      openModal(id, AlertModal, {
+        message,
         title: options.title,
-        confirmText: options.confirmText || '확인',
-        cancelText: options.cancelText || '취소',
-        onConfirm: () => {
-          resolve(true);
-          closeModal(id);
-        },
-        onCancel: () => {
-          resolve(false);
-          closeModal(id);
-        }
+        confirmText: options.confirmText
       });
-    });
-  }, [openModal, closeModal]);
+    },
+    [openModal]
+  );
+
+  const confirm = useCallback(
+    (options: ConfirmOptions): Promise<boolean> => {
+      return new Promise((resolve) => {
+        const id = `confirm-${Date.now()}`;
+        openModal(id, ConfirmModal, {
+          message: options.message,
+          title: options.title,
+          confirmText: options.confirmText || '확인',
+          cancelText: options.cancelText || '취소',
+          onConfirm: () => {
+            resolve(true);
+            closeModal(id);
+          },
+          onCancel: () => {
+            resolve(false);
+            closeModal(id);
+          }
+        });
+      });
+    },
+    [openModal, closeModal]
+  );
 
   return (
-    <ModalContext.Provider value={{ 
-      state, 
-      openModal, 
-      closeModal, 
-      closeAllModals,
-      alert,
-      confirm 
-    }}>
+    <ModalContext.Provider
+      value={{
+        state,
+        openModal,
+        closeModal,
+        closeAllModals,
+        alert,
+        confirm
+      }}
+    >
       {children}
     </ModalContext.Provider>
   );
@@ -139,4 +161,4 @@ export const useModal = () => {
     throw new Error('useModal must be used within a ModalProvider');
   }
   return context;
-}; 
+};

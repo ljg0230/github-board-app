@@ -30,12 +30,9 @@ const FreeBoardWrite: React.FC = () => {
       <Helmet>
         <title>글쓰기</title>
       </Helmet>
-      <BoardWriteForm 
-        boardName="자유게시판" 
-        onSubmit={handleSubmit}
-      />
+      <BoardWriteForm boardName="자유게시판" onSubmit={handleSubmit} />
     </>
   );
 };
 
-export default FreeBoardWrite; 
+export default FreeBoardWrite;

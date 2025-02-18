@@ -23,14 +23,14 @@ export const getMockBoardList = async (
   keyword?: string
 ): Promise<BoardListResponse> => {
   // 실제 API 호출을 시뮬레이션하기 위한 지연
-  await new Promise(resolve => setTimeout(resolve, 500));
+  await new Promise((resolve) => setTimeout(resolve, 500));
 
   const posts = boardType === 'FREE' ? freeBoardPosts : questionBoardPosts;
-  
+
   let filteredPosts = posts;
   if (keyword) {
     const searchKeyword = keyword.toLowerCase();
-    filteredPosts = posts.filter(post => {
+    filteredPosts = posts.filter((post) => {
       if (searchType === '제목') {
         return post.title.toLowerCase().includes(searchKeyword);
       } else if (searchType === '내용') {
@@ -73,11 +73,11 @@ export const getGitHubBoardList = async (
 ): Promise<BoardListResponse> => {
   try {
     const response = await getIssueList(boardType, page);
-    
+
     let filteredIssues = response.issues;
     if (keyword) {
       const searchKeyword = keyword.toLowerCase();
-      filteredIssues = response.issues.filter(issue => {
+      filteredIssues = response.issues.filter((issue) => {
         if (searchType === '제목') {
           return issue.title.toLowerCase().includes(searchKeyword);
         } else if (searchType === '내용') {
@@ -109,6 +109,7 @@ export const getGitHubBoardList = async (
 };
 
 // 환경에 따라 적절한 API 선택
-export const getBoardList = process.env.NODE_ENV === 'development' 
-  ? getMockBoardList 
-  : getGitHubBoardList; 
+export const getBoardList =
+  process.env.NODE_ENV === 'development'
+    ? getMockBoardList
+    : getGitHubBoardList;

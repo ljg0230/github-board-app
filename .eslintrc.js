@@ -30,11 +30,7 @@ module.exports = {
       jsx: true
     }
   },
-  plugins: [
-    '@typescript-eslint',
-    'react',
-    'prettier'
-  ],
+  plugins: ['@typescript-eslint', 'react', 'prettier'],
   settings: {
     'import/resolver': {
       alias: {

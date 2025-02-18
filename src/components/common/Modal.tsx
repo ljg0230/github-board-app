@@ -9,7 +9,12 @@ interface ModalProps {
   returnFocusRef?: React.RefObject<HTMLElement>;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, returnFocusRef }) => {
+const Modal: React.FC<ModalProps> = ({
+  isOpen,
+  onClose,
+  children,
+  returnFocusRef
+}) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -44,7 +49,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, returnFocusRef
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          zIndex: 1000,
+          zIndex: 1000
         }}
         onClick={(e) => {
           if (e.target === e.currentTarget) {
@@ -61,7 +66,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, returnFocusRef
             borderRadius: '4px',
             maxWidth: '500px',
             maxHeight: '90vh',
-            overflow: 'auto',
+            overflow: 'auto'
           }}
           role="dialog"
           aria-modal="true"
@@ -74,4 +79,4 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, returnFocusRef
   );
 };
 
-export default Modal; 
+export default Modal;

@@ -5,7 +5,7 @@ import {
   getTotalIssueCount,
   createIssue,
   deleteIssue,
-  updateIssue,
+  updateIssue
 } from '@/api/github';
 import { BoardType } from '@/api/config';
 
@@ -21,7 +21,7 @@ const ITEMS_PER_PAGE = 10; // 페이지당 아이템 수
 export const useIssueList = (
   boardType: BoardType,
   page: number = 1,
-  searchParams?: SearchParams | null,
+  searchParams?: SearchParams | null
 ) => {
   const queryClient = useQueryClient();
 
@@ -31,18 +31,18 @@ export const useIssueList = (
       const response = await getIssueList(
         boardType,
         page,
-        searchParams || undefined,
+        searchParams || undefined
       );
       return {
         issues: response.issues,
-        totalPages: Math.ceil(response.total_count / ITEMS_PER_PAGE),
+        totalPages: Math.ceil(response.total_count / ITEMS_PER_PAGE)
       };
-    },
+    }
   });
 
   const cancelSearch = () => {
     queryClient.cancelQueries({
-      queryKey: ['issues', boardType, page, searchParams],
+      queryKey: ['issues', boardType, page, searchParams]
     });
   };
 
@@ -56,7 +56,7 @@ export const useIssue = (boardType: BoardType, issueNumber: number) => {
     queryFn: () => getIssue(boardType, issueNumber),
     retry: false,
     refetchOnWindowFocus: false,
-    enabled: !!issueNumber,
+    enabled: !!issueNumber
   });
 };
 
@@ -68,7 +68,7 @@ export const useCreateIssue = () => {
     mutationFn: ({
       boardType,
       title,
-      body,
+      body
     }: {
       boardType: BoardType;
       title: string;
@@ -79,20 +79,20 @@ export const useCreateIssue = () => {
       await queryClient.invalidateQueries({
         queryKey: ['issues', boardType],
         exact: false,
-        refetchType: 'all',
+        refetchType: 'all'
       });
 
       await queryClient.invalidateQueries({
         queryKey: [TOTAL_COUNT_KEY, boardType],
         exact: true,
-        refetchType: 'all',
+        refetchType: 'all'
       });
 
       queryClient.removeQueries({
         queryKey: ['issues', boardType],
-        type: 'all',
+        type: 'all'
       });
-    },
+    }
   });
 };
 
@@ -102,7 +102,7 @@ export const useDeleteIssue = () => {
   return useMutation({
     mutationFn: ({
       boardType,
-      issueNumber,
+      issueNumber
     }: {
       boardType: BoardType;
       issueNumber: number;
@@ -110,17 +110,17 @@ export const useDeleteIssue = () => {
 
     onSuccess: async (_, { boardType, issueNumber }) => {
       await queryClient.invalidateQueries({
-        queryKey: ['issues', boardType],
+        queryKey: ['issues', boardType]
       });
       await queryClient.invalidateQueries({
-        queryKey: [TOTAL_COUNT_KEY, boardType],
+        queryKey: [TOTAL_COUNT_KEY, boardType]
       });
 
       queryClient.removeQueries({
         queryKey: ['issues', boardType],
-        type: 'all',
+        type: 'all'
       });
-    },
+    }
   });
 };
 
@@ -132,7 +132,7 @@ export const useUpdateIssue = () => {
       boardType,
       issueNumber,
       title,
-      body,
+      body
     }: {
       boardType: BoardType;
       issueNumber: number;
@@ -144,13 +144,13 @@ export const useUpdateIssue = () => {
       queryClient.invalidateQueries({
         queryKey: ['issue', boardType, String(issueNumber)],
         exact: true,
-        refetchType: 'all',
+        refetchType: 'all'
       });
       queryClient.invalidateQueries({
         queryKey: ['issues', boardType],
         exact: false,
-        refetchType: 'all',
+        refetchType: 'all'
       });
-    },
+    }
   });
 };

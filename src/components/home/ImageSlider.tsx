@@ -7,7 +7,7 @@ const ImageSlider: React.FC = () => {
         width: '100%',
         height: '300px',
         backgroundColor: '#f8f9fa',
-        marginBottom: '20px',
+        marginBottom: '20px'
       }}
     >
       {/* Swiper 컴포넌트는 나중에 구현 */}

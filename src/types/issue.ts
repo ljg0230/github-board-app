@@ -4,4 +4,4 @@ export interface Issue {
   content: string;
   createdAt: string;
   updatedAt: string;
-} 
+}

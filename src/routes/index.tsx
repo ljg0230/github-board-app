@@ -16,7 +16,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Home />,
+        element: <Home />
       },
       {
         path: 'board',
@@ -26,41 +26,41 @@ export const router = createBrowserRouter([
             children: [
               {
                 index: true,
-                element: <QuestionBoard />,
+                element: <QuestionBoard />
               },
               {
                 path: 'write',
-                element: <QuestionBoardWrite />,
+                element: <QuestionBoardWrite />
               },
               {
                 path: ':id',
-                element: <QuestionBoardDetail />,
-              },
-            ],
+                element: <QuestionBoardDetail />
+              }
+            ]
           },
           {
             path: 'free',
             children: [
               {
                 index: true,
-                element: <FreeBoard />,
+                element: <FreeBoard />
               },
               {
                 path: 'write',
-                element: <FreeBoardWrite />,
+                element: <FreeBoardWrite />
               },
               {
                 path: ':id',
-                element: <FreeBoardDetail />,
+                element: <FreeBoardDetail />
               },
               {
                 path: ':id/edit',
-                element: <FreeBoardEdit />,
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  },
+                element: <FreeBoardEdit />
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 ]);

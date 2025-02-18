@@ -34,4 +34,4 @@ export interface Issue {
   state: 'open' | 'closed';
 }
 
-export type BoardType = 'FREE' | 'QNA'; 
+export type BoardType = 'FREE' | 'QNA';

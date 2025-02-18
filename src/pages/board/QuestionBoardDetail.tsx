@@ -42,4 +42,4 @@ const QuestionBoardDetail: React.FC = () => {
   );
 };
 
-export default QuestionBoardDetail; 
+export default QuestionBoardDetail;

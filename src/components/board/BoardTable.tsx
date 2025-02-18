@@ -22,8 +22,8 @@ const BoardTable: React.FC<BoardTableProps> = ({ posts, onPostClick }) => {
       <tbody>
         {posts.length > 0 ? (
           posts.map((post) => (
-            <tr 
-              key={post.number} 
+            <tr
+              key={post.number}
               onClick={() => onPostClick?.(post.number)}
               style={{ cursor: onPostClick ? 'pointer' : 'default' }}
             >
@@ -31,21 +31,19 @@ const BoardTable: React.FC<BoardTableProps> = ({ posts, onPostClick }) => {
               <td>{post.title}</td>
               <td className="text-center">
                 <div className="d-flex align-items-center justify-content-center">
-                  <Image 
-                    src={post.user.avatar_url} 
-                    roundedCircle 
-                    style={{ 
-                      width: '24px', 
+                  <Image
+                    src={post.user.avatar_url}
+                    roundedCircle
+                    style={{
+                      width: '24px',
                       height: '24px',
                       marginRight: '8px'
-                    }} 
+                    }}
                   />
                   {post.user.login}
                 </div>
               </td>
-              <td className="text-center">
-                {formatDateTime(post.created_at)}
-              </td>
+              <td className="text-center">{formatDateTime(post.created_at)}</td>
             </tr>
           ))
         ) : (
@@ -60,4 +58,4 @@ const BoardTable: React.FC<BoardTableProps> = ({ posts, onPostClick }) => {
   );
 };
 
-export default BoardTable; 
+export default BoardTable;

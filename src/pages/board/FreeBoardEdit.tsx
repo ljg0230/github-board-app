@@ -17,7 +17,7 @@ const FreeBoardEdit: React.FC = () => {
         boardType: 'FREE',
         issueNumber: Number(id),
         title,
-        body: content,
+        body: content
       });
       if (result) {
         setTimeout(() => {
@@ -37,14 +37,13 @@ const FreeBoardEdit: React.FC = () => {
     return <div>게시글을 불러오는데 실패했습니다.</div>;
   }
 
-
   return (
     <>
       <Helmet>
         <title>{issue.title}</title>
       </Helmet>
-      <BoardWriteForm 
-        boardName="자유게시판" 
+      <BoardWriteForm
+        boardName="자유게시판"
         onSubmit={handleSubmit}
         initialTitle={issue.title}
         initialContent={issue.body || ''}
