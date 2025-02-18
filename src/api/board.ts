@@ -63,7 +63,6 @@ export const getMockBoardList = async (
   };
 };
 
-// Real GitHub API
 export const getGitHubBoardList = async (
   boardType: 'FREE' | 'QNA',
   page: number = 1,
@@ -107,9 +106,3 @@ export const getGitHubBoardList = async (
     throw error;
   }
 };
-
-// 환경에 따라 적절한 API 선택
-export const getBoardList =
-  process.env.NODE_ENV === 'development'
-    ? getMockBoardList
-    : getGitHubBoardList;

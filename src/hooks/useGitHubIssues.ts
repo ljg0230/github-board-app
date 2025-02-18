@@ -119,6 +119,7 @@ export const useDeleteIssue = () => {
   });
 };
 
+// 게시글 수정
 export const useUpdateIssue = () => {
   const queryClient = useQueryClient();
 

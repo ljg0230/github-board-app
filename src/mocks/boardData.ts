@@ -1,16 +1,14 @@
 import { Issue } from '@/api/config';
 
-// GitHub API 형식의 날짜 문자열 생성 함수
 const generateRandomDate = () => {
   const start = new Date(2024, 0, 1);
   const end = new Date(2024, 1, 29);
   const randomDate = new Date(
     start.getTime() + Math.random() * (end.getTime() - start.getTime())
   );
-  return randomDate.toISOString(); // 2024-02-16T11:09:01.000Z 형식
+  return randomDate.toISOString();
 };
 
-// 자유게시판 mock 데이터
 export const freeBoardPosts: Issue[] = Array.from(
   { length: 150 },
   (_, index) => ({
@@ -29,7 +27,6 @@ export const freeBoardPosts: Issue[] = Array.from(
   })
 );
 
-// 질문게시판 mock 데이터
 export const questionBoardPosts: Issue[] = Array.from(
   { length: 150 },
   (_, index) => ({

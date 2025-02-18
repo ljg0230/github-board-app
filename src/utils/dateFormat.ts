@@ -24,7 +24,6 @@ export const formatDateOrTimeIfToday = (dateString: string): string => {
   const hours = String(koreanDate.getUTCHours()).padStart(2, '0');
   const minutes = String(koreanDate.getUTCMinutes()).padStart(2, '0');
 
-  // 현재 한국 시간 구하기
   const now = new Date();
   const koreanNow = new Date(now.getTime() + 9 * 60 * 60 * 1000);
 
