@@ -77,15 +77,10 @@ export const useCreateIssue = () => {
 
     onSuccess: async (newIssue, { boardType }) => {
       await queryClient.invalidateQueries({
-        queryKey: ['issues', boardType],
-        exact: false,
-        refetchType: 'all'
+        queryKey: ['issues', boardType]
       });
-
       await queryClient.invalidateQueries({
-        queryKey: [TOTAL_COUNT_KEY, boardType],
-        exact: true,
-        refetchType: 'all'
+        queryKey: [TOTAL_COUNT_KEY, boardType]
       });
 
       queryClient.removeQueries({

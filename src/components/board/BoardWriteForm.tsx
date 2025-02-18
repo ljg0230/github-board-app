@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Form, Button } from 'react-bootstrap';
-import { useNavigate, useBlocker } from 'react-router-dom';
-import { useModal } from '@/contexts/ModalContext';
+import useUnsavedChangesWarning from '@/hooks/useUnsavedChangesWarning';
 
 interface BoardWriteFormProps {
   boardName: string;
@@ -23,57 +22,12 @@ const BoardWriteForm: React.FC<BoardWriteFormProps> = ({
     content: false
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const navigate = useNavigate();
   const titleInputRef = useRef<HTMLInputElement>(null);
-  const { confirm } = useModal();
 
   const hasUnsavedChanges =
     (title.trim() !== '' || content.trim() !== '') && !isSubmitting;
 
-  const blocker = useBlocker(({ currentLocation, nextLocation }) => {
-    if (
-      !hasUnsavedChanges ||
-      currentLocation.pathname === nextLocation.pathname
-    ) {
-      return false;
-    }
-    return true;
-  });
-
-  useEffect(() => {
-    const checkNavigation = async () => {
-      if (blocker.state === 'blocked') {
-        const shouldProceed = await confirm({
-          title: '작성 중인 내용이 있습니다.',
-          message:
-            '이 페이지를 벗어나면 작성 중인 내용이 사라집니다.\n\n이동하시겠습니까?',
-          confirmText: '이동하기',
-          cancelText: '취소'
-        });
-
-        if (shouldProceed) {
-          blocker.proceed();
-        } else {
-          blocker.reset();
-        }
-      }
-    };
-
-    checkNavigation();
-  }, [blocker, confirm]);
-
-  // 브라우저 기본 이탈 방지 (새로고침, 창 닫기 등)
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (hasUnsavedChanges) {
-        e.preventDefault();
-        e.returnValue = ''; // 브라우저 기본 메시지 표시
-      }
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [hasUnsavedChanges]);
+  useUnsavedChangesWarning(hasUnsavedChanges);
 
   useEffect(() => {
     titleInputRef.current?.focus();
@@ -94,7 +48,6 @@ const BoardWriteForm: React.FC<BoardWriteFormProps> = ({
     try {
       setIsSubmitting(true);
       await onSubmit(title, content);
-      navigate(-1);
     } catch (error) {
       console.error('글쓰기 실패:', error);
       setIsSubmitting(false);
